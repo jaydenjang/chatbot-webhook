@@ -1,3 +1,3 @@
 FROM nginx:stable
 COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 1337
+EXPOSE 80 1337
