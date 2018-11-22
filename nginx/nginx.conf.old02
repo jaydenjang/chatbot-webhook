@@ -1,4 +1,4 @@
-worker_processes 1;
+worker_processes 2;
 
 events { worker_connections 1024; }
 
@@ -6,40 +6,39 @@ http {
     upstream nginx_server {
         least_conn;
         server node-webhook-1:1337 weight=10 max_fails=3 fail_timeout=30s;
-#        server node-webhook-2:1337 weight=10 max_fails=3 fail_timeout=30s;
+        server node-webhook-2:1337 weight=10 max_fails=3 fail_timeout=30s;
     }
 
     server {
        listen 80;
 
        root           /usr/share/nginx/html;
-       server_name    geakorea.twilightparadox.com;
+       server_name    geakorea.mooo.com;
 
- 	    location ~ /.well-known {
-	        allow all;
-	    }
+ 	location ~ /.well-known {
+	allow all;
+	}
 
         location / {
-            proxy_pass http://nginx_server;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection 'upgrade';
-            proxy_set_header Host $host;
-            proxy_cache_bypass $http_upgrade;
+        proxy_pass http://nginx_server;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
         }
     }
 
     # HTTPS server
     #
     server {
-        listen       443 ssl http2;
-        
+        listen       443 ssl;
         root         /usr/share/nginx/html;
-        server_name  geakorea.twilightparadox.com;
+        server_name  geakorea.mooo.com;
 
         # certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
-        ssl_certificate      /etc/letsencrypt/live/geakorea.twilightparadox.com/fullchain.pem;
-        ssl_certificate_key  /etc/letsencrypt/live/geakorea.twilightparadox.com/privkey.pem;
+    #    ssl_certificate      /etc/letsencrypt/live/geakorea.mooo.com/fullchain.pem;
+    #    ssl_certificate_key  /etc/letsencrypt/live/geakorea.mooo.com/privkey.pem;
         
         ssl_session_cache    shared:SSL:1m;
         ssl_session_timeout  5m;
@@ -62,20 +61,21 @@ http {
         ssl_stapling_verify on;
 
         ## verify chain of trust of OCSP response using Root CA and Intermediate certs
-        ssl_trusted_certificate /etc/letsencrypt/live/geakorea.twilightparadox.com/chain.pem;
+    #    ssl_trusted_certificate /etc/letsencrypt/live/geakorea.mooo.com/chain.pem;
 
         resolver 8.8.8.8 8.8.4.4 valid=86400;
         resolver_timeout 10;
 
         location / {
-            proxy_pass http://nginx_server;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection 'upgrade';
-            proxy_set_header Host $host;
-            proxy_cache_bypass $http_upgrade;
+        proxy_pass http://nginx_server;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
         }
     }
 
     include servers/*;
+
 }
