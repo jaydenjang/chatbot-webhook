@@ -16,12 +16,12 @@ services:
 
   node-webhook-1:
     container_name: NODE_WEBHOOK_1
-    image: node-webhook:0.0.2
+    image: node-webhook:0.0.3
     ports:
       - 1337
 
 #  node-webhook-2:
 #    container_name: NODE_WEBHOOK_2
-#    image: node-webhook:0.0.2
+#    image: node-webhook:0.0.3
 #    ports:
 #      - 1337
